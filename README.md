@@ -4,6 +4,8 @@ Learning Verilog
 
 This repository will contain some of the files that I will write as I learn the Verilog language.
 
+Most of these little designs are exercises from the book "Learn Verilog by Example" by Blaine Readler. This text may be mentioned elsewhere as "VBE".
+
 For others' benefit, as well as that of my future self,
 I shall describe some of the details of getting this code working.
 
