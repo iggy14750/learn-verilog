@@ -2,6 +2,12 @@
 # Vim swapfiles
 *.swp
 
+# Verilated source files
+src/*.cpp
+
 # iVerilog compiled files
 *.vvp
+
+# Verilator build environment
+obj_dir
 
