@@ -24,17 +24,19 @@ VER_OPTS = \
 	--cc \
 	--hierarchical \
 
+VER_MK = obj_dir/Vour.mk
 
-ver_build: $(VER_CXX)
+default: $(SRCS) $(VER_MK) Vour
 build: $(EXES)
 
-$(VER_CXX): $(SRCS)
-	verilator --cc --exe --build -Wall ver_sim/sim_main.cpp src/our.v
-	#verilator $(VER_OPTS) $<
-	#touch $@
+$(VER_MK): $(SRCS) ver_sim/sim_main.cpp
+	verilator --cc --exe -Wall ver_sim/sim_main.cpp src/our.v
 
 $(EXES): $(SRCS) $(TBS)
 	iverilog $(IVERILOG_OPTS) $(SRCS) $(TBS) -o $@ -s $(basename $@)
+
+Vour: $(VER_MK)
+	make -C obj_dir -f Vour.mk Vour
 
 clean:
 	@rm -rf *.vvp src/*.cpp obj_dir

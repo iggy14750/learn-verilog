@@ -1,3 +1,3 @@
 module our;
-   initial begin $display("Hello World"); $finish; end
+   initial begin $display("My first ever design."); $finish; end
 endmodule
