@@ -11,3 +11,6 @@ src/*.cpp
 # Verilator build environment
 obj_dir
 
+# This stamp keeps track of when the sources were Verilated.
+.stamp.verilate
+

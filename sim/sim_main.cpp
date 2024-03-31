@@ -1,4 +1,4 @@
-#include "Vour.h"
+#include "Vwait_fsm.h"
 #include "verilated.h"
 
 #define NUM_CYCLES 100
@@ -6,7 +6,7 @@
 int main(int argc, char** argv) {
     //VerilatedContext* contextp = new VerilatedContext;
     //contextp->commandArgs(argc, argv);
-    Vour* top = new Vour;
+    Vwait_fsm* top = new Vwait_fsm;
     //while (!contextp->gotFinish()) { top->eval(); }
     //top->eval();
     for (int cycle = 0; cycle < NUM_CYCLES; cycle++) {

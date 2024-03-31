@@ -1,43 +1,82 @@
 
-SRCS = \
-	src/wait_fsm.v \
-	src/sr_flop_and_counter.v \
-	src/dflop.v
+RTL = \
+	rtl/wait_fsm.v \
+
+	#rtl/sr_flop_and_counter.v \
+	#rtl/dflop.v
 
 VER_CXX = $(SRCS:v=cpp)
 
-TBS = \
-	test/wait_fsm_tb.v \
-	test/dflop_tb.v \
-	test/sr_flop_and_counter_tb.v \
-	test/hello.v
+TB_CXX = sim/sim_main.cpp
+
 INCLUDES = 
-#EXES = $(patsubst %.v, $(basename %.vvp), $(TBS))
-EXES = \
-	wait_fsm_tb.vvp \
-	dflop_tb.vvp \
-	sr_flop_and_counter_tb.vvp \
-	hello.vvp
-IVERILOG_OPTS = 
 
 VER_OPTS = \
-	--cc \
-	--hierarchical \
+	-Wall \
+	--trace \
+	--x-assign unique \
+	--x-initial unique \
 
-VER_MK = obj_dir/Vour.mk
+	#--hierarchical \
 
-default: $(SRCS) $(VER_MK) Vour
-build: $(EXES)
+#VER_MK = obj_dir/Vour.mk
+#
+#default: $(SRCS) $(VER_MK) Vour
+#build: $(EXES)
+#
+#$(VER_MK): $(SRCS) ver_sim/sim_main.cpp
+#	verilator --cc --exe -Wall ver_sim/sim_main.cpp src/our.v
+#
+#$(EXES): $(SRCS) $(TBS)
+#	iverilog $(IVERILOG_OPTS) $(SRCS) $(TBS) -o $@ -s $(basename $@)
+#
+#Vour: $(VER_MK)
+#	make -C obj_dir -f Vour.mk Vour
+#
+#clean:
+#	@rm -rf *.vvp src/*.cpp obj_dir
 
-$(VER_MK): $(SRCS) ver_sim/sim_main.cpp
-	verilator --cc --exe -Wall ver_sim/sim_main.cpp src/our.v
+# Verilator example makefile
+# Norbertas Kremeris 2021
+MODULE=wait_fsm
 
-$(EXES): $(SRCS) $(TBS)
-	iverilog $(IVERILOG_OPTS) $(SRCS) $(TBS) -o $@ -s $(basename $@)
+.PHONY:sim
+sim: waveform.vcd
 
-Vour: $(VER_MK)
-	make -C obj_dir -f Vour.mk Vour
+.PHONY:verilate
+verilate: .stamp.verilate
 
+.PHONY:build
+build: obj_dir/Valu
+
+.PHONY:waves
+waves: waveform.vcd
+	@echo
+	@echo "### WAVES ###"
+	gtkwave waveform.vcd
+
+waveform.vcd: ./obj_dir/V$(MODULE)
+	@echo
+	@echo "### SIMULATING ###"
+	./obj_dir/V$(MODULE) +verilator+rand+reset+2 
+
+./obj_dir/V$(MODULE): .stamp.verilate
+	@echo
+	@echo "### BUILDING SIM ###"
+	make -C obj_dir -f V$(MODULE).mk V$(MODULE)
+
+.stamp.verilate: $(RTL) $(TB_CXX)
+	@echo
+	@echo "### VERILATING ###"
+	verilator $(VER_OPTS) -cc $(RTL) --exe $(TB_CXX)
+	@touch .stamp.verilate
+
+.PHONY:lint
+lint: $(RTL)
+	verilator --lint-only $(RTL)
+
+.PHONY: clean
 clean:
-	@rm -rf *.vvp src/*.cpp obj_dir
-
+	rm -rf .stamp.*;
+	rm -rf ./obj_dir
+	rm -rf waveform.vcd
