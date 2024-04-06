@@ -12,5 +12,8 @@ src/*.cpp
 obj_dir
 
 # This stamp keeps track of when the sources were Verilated.
-.stamp.verilate
+.stamp.*
+
+# Waveform generated from verilated testbench
+waveform.vcd
 
