@@ -1,13 +1,14 @@
 
-RTL = \
-	rtl/wait_fsm.v \
-
-	#rtl/sr_flop_and_counter.v \
-	#rtl/dflop.v
-
+# This Makefile now works on only ONE top-level Verilog module.
+# We can see that it works on "wait_fsm" by default,
+# but this can be changed on the command-line using the following syntax:
+#
+#     make MODULE=<ModuleName>
+#
+MODULE=wait_fsm
+RTL = rtl/$(MODULE).v
 VER_CXX = $(SRCS:v=cpp)
-
-TB_CXX = sim/sim_main.cpp
+TB_CXX = sim/$(MODULE)_tb.cpp
 
 INCLUDES = 
 
@@ -18,27 +19,6 @@ VER_OPTS = \
 	--x-initial unique \
 
 	#--hierarchical \
-
-#VER_MK = obj_dir/Vour.mk
-#
-#default: $(SRCS) $(VER_MK) Vour
-#build: $(EXES)
-#
-#$(VER_MK): $(SRCS) ver_sim/sim_main.cpp
-#	verilator --cc --exe -Wall ver_sim/sim_main.cpp src/our.v
-#
-#$(EXES): $(SRCS) $(TBS)
-#	iverilog $(IVERILOG_OPTS) $(SRCS) $(TBS) -o $@ -s $(basename $@)
-#
-#Vour: $(VER_MK)
-#	make -C obj_dir -f Vour.mk Vour
-#
-#clean:
-#	@rm -rf *.vvp src/*.cpp obj_dir
-
-# Verilator example makefile
-# Norbertas Kremeris 2021
-MODULE=wait_fsm
 
 .PHONY:sim
 sim: waveform.vcd
